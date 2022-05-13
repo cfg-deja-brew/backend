@@ -16,7 +16,7 @@ def cafes_by_city(City):
 
 
 #Returns cafes based on attributes - unfinished
-def cafes_by_attribute(Id)
+def cafes_by_attribute(Id):
     with get_db_connection() as connection:
         with connection.cursor() as cursor:
             cursor.execute
