@@ -43,6 +43,47 @@ def derby_cafes():
     cursor.close()
     return jsonify(result)
 
+# gets the latitude and longitude for coffee shops in derby, for use with markers
+@app.get('/derby/cafes')
+def derby_cafes_location():
+    cursor = connection.cursor(dictionary=True)
+    cursor.execute("SELECT Latitude, Longitude FROM CAFES WHERE City='Derby'")
+    result = cursor.fetchone()
+    cursor.close()
+    return jsonify(result)
+
+# gets the latitude and longitude for coffee shops in leicester, for use with markers
+@app.get('/leicester/cafes')
+def leicester_cafes_location():
+    cursor = connection.cursor(dictionary=True)
+    cursor.execute("SELECT Latitude, Longitude FROM CAFES WHERE City='Leicester'")
+    result = cursor.fetchone()
+    cursor.close()
+    return jsonify(result)
+
+# gets the latitude and longitude for coffee shops in nottingham, for use with markers
+@app.get('/nottingham/cafes')
+def nottingham_cafes_location():
+    cursor = connection.cursor(dictionary=True)
+    cursor.execute("SELECT Latitude, Longitude FROM CAFES WHERE City='Nottingham'")
+    result = cursor.fetchone()
+    cursor.close()
+    return jsonify(result)
+
+
+# get users by id - NOT CURRENTLY WORKING
+@app.get('/users/<int:user_id>')
+def get_user_by_id(Id):
+    cursor = connection.cursor(dictionary=True)
+    cursor.execute("""SELECT Id
+                      FROM USERS
+                      WHERE Id = %s""", [Id])
+    result = cursor.fetchone()
+    cursor.close()
+    response = jsonify(result)
+    return response
+
+
 app.run(port=port)
 
 
