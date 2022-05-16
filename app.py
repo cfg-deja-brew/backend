@@ -1,4 +1,4 @@
-from flask import Flask, jsonify
+from flask import Flask, request, jsonify
 import mysql.connector
 from db_connection import DB_HOST, DB_USER, DB_PASS, DB_NAME
 
@@ -19,65 +19,29 @@ connection = mysql.connector.connect(
 def hello_world():
     return("hello world")
 
-@app.get('/leicester')
-def leicester_cafes():
+@app.get('/<city>')
+def cafes(city):
     cursor = connection.cursor(dictionary=True)
-    cursor.execute("SELECT * FROM CAFES WHERE City='Leicester'")
-    result = cursor.fetchone()
+    query = "SELECT * FROM CAFES WHERE City='%s'"
+    if request.args.get('VeganFriendly'):
+        query += " WHERE VeganFriendly = TRUE"
+    if request.args.get('DogFriendly'):
+        query += " WHERE DogFriendly = TRUE"
+    cursor.execute(query, [city])
+    results = cursor.fetchall()
     cursor.close()
-    return jsonify(result)
-
-@app.get('/nottingham')
-def nottingham_cafes():
-    cursor = connection.cursor(dictionary=True)
-    cursor.execute("SELECT * FROM CAFES WHERE City='Nottingham'")
-    result = cursor.fetchone()
-    cursor.close()
-    return jsonify(result)
-
-@app.get('/derby')
-def derby_cafes():
-    cursor = connection.cursor(dictionary=True)
-    cursor.execute("SELECT * FROM CAFES WHERE City='Derby'")
-    result = cursor.fetchone()
-    cursor.close()
-    return jsonify(result)
-
-# gets the latitude and longitude for coffee shops in derby, for use with markers
-@app.get('/derby/cafes')
-def derby_cafes_location():
-    cursor = connection.cursor(dictionary=True)
-    cursor.execute("SELECT Latitude, Longitude FROM CAFES WHERE City='Derby'")
-    result = cursor.fetchone()
-    cursor.close()
-    return jsonify(result)
-
-# gets the latitude and longitude for coffee shops in leicester, for use with markers
-@app.get('/leicester/cafes')
-def leicester_cafes_location():
-    cursor = connection.cursor(dictionary=True)
-    cursor.execute("SELECT Latitude, Longitude FROM CAFES WHERE City='Leicester'")
-    result = cursor.fetchone()
-    cursor.close()
-    return jsonify(result)
-
-# gets the latitude and longitude for coffee shops in nottingham, for use with markers
-@app.get('/nottingham/cafes')
-def nottingham_cafes_location():
-    cursor = connection.cursor(dictionary=True)
-    cursor.execute("SELECT Latitude, Longitude FROM CAFES WHERE City='Nottingham'")
-    result = cursor.fetchone()
-    cursor.close()
-    return jsonify(result)
+    response = jsonify(results)
+    response.headers.add("Access-Control-Allow-Origin", "*")
+    return response
 
 
 # get users by id - NOT CURRENTLY WORKING
 @app.get('/users/<int:user_id>')
-def get_user_by_id(Id):
+def get_user_by_id(user_id):
     cursor = connection.cursor(dictionary=True)
     cursor.execute("""SELECT Id
                       FROM USERS
-                      WHERE Id = %s""", [Id])
+                      WHERE Id = %s""", [user_id])
     result = cursor.fetchone()
     cursor.close()
     response = jsonify(result)
