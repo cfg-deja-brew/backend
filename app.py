@@ -22,9 +22,7 @@ def hello_world():
 @app.get('/<city>')
 def cafes(city):
     cursor = connection.cursor(dictionary=True)
-    query = """SELECT * FROM CAFES c 
-               JOIN CAFE_ATTRIBUTES a ON c.Id = a.CafeId
-               WHERE c.City='%s'"""
+    query = "SELECT * FROM CAFES WHERE City=%s"
     if request.args.get('VeganFriendly'):
         query += " WHERE VeganFriendly = TRUE"
     if request.args.get('Accessibility'):
