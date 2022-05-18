@@ -22,11 +22,23 @@ def hello_world():
 @app.get('/<city>')
 def cafes(city):
     cursor = connection.cursor(dictionary=True)
-    query = "SELECT * FROM CAFES WHERE City='%s'"
+    query = """SELECT * FROM CAFES c 
+               JOIN CAFE_ATTRIBUTES a ON c.Id = a.CafeId
+               WHERE c.City='%s'"""
     if request.args.get('VeganFriendly'):
         query += " WHERE VeganFriendly = TRUE"
+    if request.args.get('Accessibility'):
+        query += " WHERE Accessibility = TRUE"
     if request.args.get('DogFriendly'):
         query += " WHERE DogFriendly = TRUE"
+    if request.args.get('WorkFriendly'):
+        query += " WHERE WorkFriendly = TRUE"
+    if request.args.get('Trendy'):
+        query += " WHERE Trendy = TRUE"
+    if request.args.get('Parking'):
+        query += " WHERE Parking = TRUE"
+    if request.args.get('DateFriendly'):
+        query += " WHERE DateFriendly = TRUE"
     cursor.execute(query, [city])
     results = cursor.fetchall()
     cursor.close()
