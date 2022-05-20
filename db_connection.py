@@ -1,5 +1,7 @@
 from mysql.connector import connect
 
+from flask import g
+
 DB_NAME = 'DEJA_BREW'
 DB_HOST = 'localhost'
 
@@ -12,9 +14,9 @@ DB_PASS = 'admin'
 
 # Connect to the database
 def get_db_connection():
-    connection = connect(
+    g.connection = connect(
         host=DB_HOST,
         user=DB_USER,
         password=DB_PASS,
         database=DB_NAME)
-    return connection
+    return g.connection

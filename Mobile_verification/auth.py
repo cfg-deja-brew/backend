@@ -1,7 +1,7 @@
 import functools
 
 from flask import (flash, g, redirect, render_template, request, session, url_for
-)
+                   )
 from flask import current_app as app
 
 from db_connection import get_db_connection
@@ -11,7 +11,8 @@ from twilio.rest import Client
 # Initialize Twilio client
 client = Client()
 
-#currently missing function to check if user is logged in
+
+# currently missing function to check if user is logged in
 
 def login_required(view):
     """View decorator that redirects anonymous users to the login page."""
@@ -24,6 +25,20 @@ def login_required(view):
         return view(**kwargs)
 
     return wrapped_view
+
+
+@app.before_request
+def load_logged_in_user():
+    """If a user id is stored in the session, load the user object from
+    the database into ``g.user``."""
+    user_id = session.get('user_id')
+
+    if user_id is None:
+        g.user = None
+    else:
+        g.user = get_db_connection().execute(
+            'SELECT * FROM user WHERE id = ?', (user_id,)
+        ).fetchone()
 
 
 def start_verification(to, channel='sms'):
@@ -64,7 +79,6 @@ def check_verification(phone, code):
         flash("Error validating code: {}".format(e))
 
     return redirect(url_for('auth.verify'))
-
 
 
 @app.get('/signup', methods=('GET', 'POST'))
@@ -129,7 +143,7 @@ def login():
     """Log in a registered user by adding the user id to the session."""
     if request.method == 'POST':
         phone = request.form['Mobile']
-        #password = request.form['password']
+        # password = request.form['password']
         db = get_db_connection()
         error = None
         user = db.execute(
@@ -145,7 +159,7 @@ def login():
             # store the user id in a new session and return to secret content
             session.clear()
             session['user_id'] = user['id']
-            return redirect(url_for('')) #location to be added
+            return redirect(url_for(''))  # location to be added
 
         flash(error)
 
