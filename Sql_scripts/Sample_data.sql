@@ -20,9 +20,9 @@ INSERT INTO CAFES (Id, CafeName, Address, PostCode, City, Created, Latitude, Lon
 ('17', 'The Specialty Coffee Shop','50 Friar Ln','NG1 6DQ','Nottingham', '2022-05-04 10:07:45','52.9524', '-1.152', 'Laid-back spot for java drinks with savory cafe eats (some vegan) & baked goods for daytime dining','9am-6pm daily');
 
 INSERT INTO USERS (Id, FirstName, LastName, Email, Mobile, MobileConfirmed, AccountCreated) VALUES
-('101', 'Jane', 'Smith', 'jane.smith@gmail.com', '+447545402087', TRUE, '2022-05-04 10:07:45'),
-('102', 'Tom', 'Jackson', 'tom.jackh@gmail.com', '+447545402088', TRUE, '2022-05-04 10:09:35'),
-('103', 'Sonny', 'Smith', 'sonnys@gmail.com', '+447545402089', TRUE, '2022-05-04 10:11:45'),
+('101', 'Jane', 'Smith', 'jane.smith@gmail.com', '+447432087350', TRUE, '2022-05-04 10:07:45'),
+('102', 'Tom', 'Jackson', 'tom.jackh@gmail.com', '+447487222663', TRUE, '2022-05-04 10:09:35'),
+('103', 'Sonny', 'Smith', 'sonnys@gmail.com', '+447717579188', TRUE, '2022-05-04 10:11:45'),
 ('104', 'Nick', 'Roberts', 'nroberts@gmail.com', '+447545402090', TRUE, '2022-05-04 11:09:00');
 
 INSERT INTO REVIEWS (Id, UserId, CafeId, Rating, ReviewText, Created) VALUES
