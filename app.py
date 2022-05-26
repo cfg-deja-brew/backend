@@ -3,6 +3,7 @@ from flask_cors import CORS
 import mysql.connector
 from db_connection import DB_HOST, DB_USER, DB_PASS, DB_NAME
 from twilio.rest import Client
+from config import twilio_account_sid, twilio_auth_token
 import random
 import json
 
@@ -10,9 +11,7 @@ app = Flask(__name__)
 cors = CORS(app)
 port = 4000
 
-account_sid = 'ACb7f4ee561c5fda8544277315de007d1c' 
-auth_token = '52f6114614e3040d598dea8c78605731' 
-client = Client(account_sid, auth_token) 
+client = Client(twilio_account_sid, twilio_auth_token) 
 
 #Below are manual db retrieval tests - I have started creating functions in separate files - see cafe and user management
 
@@ -31,21 +30,23 @@ def hello_world():
 @app.get('/<city>')
 def cafes(city):
     cursor = connection.cursor(dictionary=True)
-    query = "SELECT * FROM CAFES WHERE City = %s"
-    if request.args.get('VeganFriendly'):
-        query += " WHERE VeganFriendly = TRUE"
-    if request.args.get('Accessibility'):
-        query += " WHERE Accessibility = TRUE"
-    if request.args.get('DogFriendly'):
-        query += " WHERE DogFriendly = TRUE"
-    if request.args.get('WorkFriendly'):
-        query += " WHERE WorkFriendly = TRUE"
-    if request.args.get('Trendy'):
-        query += " WHERE Trendy = TRUE"
-    if request.args.get('Parking'):
-        query += " WHERE Parking = TRUE"
-    if request.args.get('DateFriendly'):
-        query += " WHERE DateFriendly = TRUE"
+    query = """SELECT * FROM CAFES
+               JOIN CAFE_ATTRIBUTES ON Id = CafeId
+               WHERE City = %s"""
+    if request.args.get('veganFriendly') == 'true':
+        query += " AND VeganFriendly = TRUE"
+    if request.args.get('accessible') == 'true':
+        query += " AND Accessible = TRUE"
+    if request.args.get('dogFriendly') == 'true':
+        query += " AND DogFriendly = TRUE"
+    if request.args.get('workFriendly') == 'true':
+        query += " AND WorkFriendly = TRUE"
+    if request.args.get('trendy') == 'true':
+        query += " AND Trendy = TRUE"
+    if request.args.get('parking') == 'true':
+        query += " AND Parking = TRUE"
+    if request.args.get('dateFriendly') == 'true':
+        query += " AND DateFriendly = TRUE"
     cursor.execute(query, [city])
     results = cursor.fetchall()
     cursor.close()
