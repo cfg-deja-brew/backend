@@ -36,7 +36,7 @@ def cafes(city):
     if request.args.get('veganFriendly') == 'true':
         query += " AND VeganFriendly = TRUE"
     if request.args.get('accessible') == 'true':
-        query += " AND Accessible = TRUE"
+        query += " AND `Accessible` = TRUE"
     if request.args.get('dogFriendly') == 'true':
         query += " AND DogFriendly = TRUE"
     if request.args.get('workFriendly') == 'true':
@@ -53,13 +53,13 @@ def cafes(city):
     return jsonify(results)
 
 
-# get users by id - NOT CURRENTLY WORKING
-@app.get('/users/<int:user_id>')
-def get_user_by_id(user_id):
+@app.get('/users/<int:session_id>')
+def get_user_by_id(session_id):
     cursor = connection.cursor(dictionary=True)
-    cursor.execute("""SELECT Id
+    cursor.execute("""SELECT FirstName, LastName, Email, USERS.Mobile
                       FROM USERS
-                      WHERE Id = %s""", [user_id])
+                      JOIN LOGIN_SESSIONS ON USERS.Mobile = LOGIN_SESSIONS.Mobile
+                      WHERE SessionId = %s""", [session_id])
     result = cursor.fetchone()
     cursor.close()
     response = jsonify(result)
@@ -75,7 +75,7 @@ def login():
                               WHERE Mobile = %s""", [mobile])
             if not cursor.fetchone():
                 return jsonify({"data": "error"})
-            code = str(random.randint(0, 999999))  # Generate a random 6-digit code
+            code = str(random.randint(100000, 999999))  # Generate a random 6-digit code
             cursor.execute("""INSERT INTO LOGIN_SESSIONS
                               (Mobile, Code)
                               VALUES

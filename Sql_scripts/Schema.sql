@@ -47,7 +47,7 @@ CHECK (Rating BETWEEN 1.0 AND 5.0)
 CREATE TABLE CAFE_ATTRIBUTES (
 CafeId INT NOT NULL,
 VeganFriendly BOOLEAN,
-Accessible BOOLEAN,
+`Accessible` BOOLEAN,
 DogFriendly BOOLEAN,
 WorkFriendly BOOLEAN,
 Trendy BOOLEAN, 
